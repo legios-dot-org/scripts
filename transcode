@@ -1,0 +1,18 @@
+#!/usr/local/bin/bash
+#HEVC
+find -E "${1}" -regex ".*\.(wmv|avi|mkv|mp4|m4v|flv|mpg|mpeg)" -print0 -exec bash -c '
+	if [ !  "`ffprobe "{}" 2>&1 | grep "Stream #0"|grep -i video |grep -v "hevc"`" ]; then
+		echo "{} is fine"
+	else
+		echo "{} isnt fine"
+		x="{}"
+		src="`dirname {}`"
+		y="${x%.*}"
+		echo "X = ${x}"
+		echo "Y = ${y}"
+		ffmpeg -i "{}" -c:v libx265 -preset medium -x265-params keyint=240:min-keyint=20 -ac 2 -c:a libopus -y -b:a 96k "${y}.mkv" && \
+		echo "Deleting {}" && \
+		rm -v "{}" && \
+		echo "Transcoding of {} completed" | mail -s "Transcoding of {} completed on `hostname -s`" mark@legios.org
+	fi
+' \;
