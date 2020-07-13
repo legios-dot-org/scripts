@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 #HEVC
-find -E "${1}" -regex ".*\.(wmv|avi|mkv|mp4|m4v|flv|mpg|mpeg)" -print0 -exec bash -c '
+find -E "${1}" -regex ".*\.(wmv|avi|mkv|mp4|m4v|flv|mpg|mpeg|rm|mov)" -print0 -exec bash -c '
 	if [ !  "`ffprobe "{}" 2>&1 | grep "Stream #0"|grep -i video |grep -v "hevc"`" ]; then
 		echo "{} is fine"
 	else
